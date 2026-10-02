@@ -20,7 +20,24 @@ internal class BankAccount
             return balance;
         } 
     }
-        private List<Transaction> _allTransactions = new List<Transaction>();
+
+    public string GetAccountHistory()
+    {
+        StringBuilder report = new StringBuilder();
+        decimal balance = 0;
+        report.AppendLine("Data\t\tAmount\tBalance\tNote");
+        foreach (var item in _allTransactions)
+        {
+            balance += item.Amount;
+            report.AppendLine($"" + $"{item.Date.ToShortDateString()}\t" +
+                              $"{item.Amount}\t{balance}\t{item.Date}");
+
+        }
+
+        return report.ToString();
+    }
+
+    private List<Transaction> _allTransactions = new List<Transaction>();
 
     public BankAccount(string name, decimal initialBalance)
     {
