@@ -85,7 +85,7 @@ public class BankAccount
         var deposite = new Transaction(amount, date, note);
         _allTransactions.Add(deposite);
     }
-
+     
     /// <summary>
     /// Производит снятие (списание) денежных средств со счёта.
     /// </summary>
