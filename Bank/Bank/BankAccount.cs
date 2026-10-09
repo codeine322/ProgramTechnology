@@ -1,13 +1,15 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
-namespace Bank;
+namespace bank;
 
-
-// потомок класса object => можно переопределить 
-// виртуальные методы, находящиеся в object
+// BankAccount - потомок класса object => 
 public class BankAccount
 {
-    static private int s_accountNuberSeed = 1000000000;
+
+    // Поле для хранения лимита (для обычного счета это 0)
+    private readonly decimal _minimumBalance;
+    static private int s_accountNumberSeed = 1000000000;
     public string Number { get; }
     public string Owner { get; private set; }
     public decimal Balance
@@ -15,56 +17,79 @@ public class BankAccount
         get
         {
             decimal balance = 0;
-            foreach (var item in _allTransactions)
+            foreach (var transaction in _allTransactions)
             {
-                balance += item.Amount;
+                balance += transaction.Amount;
             }
-
             return balance;
         }
     }
-
     private List<Transaction> _allTransactions = new List<Transaction>();
-
-    public BankAccount(string name, decimal initialBalance)
+    // Старый конструктор для обычных счетов (минимум равен 0)
+    public BankAccount(string name, decimal initialBalance) : this(name, initialBalance, 0)
+    {
+    }
+    public BankAccount(string name, decimal initialBalance, decimal minimumBalance)
     {
 
-        Owner = name; // this.Owner = name
-        MakeDeposit(initialBalance, DateTime.UtcNow, "Initial balance");
-        Number = s_accountNuberSeed.ToString();
-        s_accountNuberSeed++;
+        Owner = name; //this.Owner = name;
+
+        Number = s_accountNumberSeed.ToString();
+        s_accountNumberSeed++;
+
+        _minimumBalance = minimumBalance;
+
+        if (initialBalance > 0)
+            MakeDeposit(initialBalance, DateTime.UtcNow, "initial balance");
+
     }
     public void MakeDeposit(decimal amount, DateTime date, string note)
     {
-        if (amount <= 0)
+        if (amount < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Amount of deposit must be positive");
+            throw new ArgumentOutOfRangeException
+                (nameof(amount), "Amount of deposit must be positive");
         }
 
-        var deposit = new Transaction(amount, date, note);
-        _allTransactions.Add(deposit);
-    }
+        var deposite = new Transaction(amount, date, note);
+        _allTransactions.Add(deposite);
 
+    }
     public void MakeWithdrawal(decimal amount, DateTime date, string note)
     {
-        if (amount <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Amount of withdrawal must be positive");
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
 
-        if (Balance < amount)
-        {
-            throw new InvalidOperationException("Not sufficient rubls for this withdawal");
-        }
+        Transaction? overdraftTransaction
+            = CheckWithdrawalLimit(Balance - amount < _minimumBalance);
+        Transaction? withdrawal = new(-amount, date, note);
 
-        var withdrawal = new Transaction(-amount, date, note);
         _allTransactions.Add(withdrawal);
+
+        if (overdraftTransaction is not null)
+            _allTransactions.Add(overdraftTransaction);
     }
+
+    // Метод, который переопределяет кредитный счет для начисления 20 единиц комиссии
+    protected virtual Transaction? CheckWithdrawalLimit(bool isOverdrawn)
+    {
+        if (isOverdrawn)
+        {
+            throw new InvalidOperationException("Not sufficient rubls for this widthdrawal");
+        }
+        else
+        {
+            //default - содержит значение по умолчанию, так как тип возвращаемого значения - ссылочный, то
+            //default = null
+            return default; // == return null
+        }
+    }
+
     public string GetAccountHistory()
     {
         var report = new StringBuilder();
+
         decimal balance = 0;
-        report.Append("Data\t\tAmount]tBalance\tNote");
+        report.AppendLine("Data\t\tAmount\tBalance\tNote");
         foreach (var item in _allTransactions)
         {
             balance += item.Amount;
@@ -74,20 +99,20 @@ public class BankAccount
         }
         return report.ToString();
     }
-    // Ключевое слово virtual позволяет в дочернем классе
-    // предоставить другую реализацию 
-    // Метода PerformMonthAndTransactions
+
+
+    //Ключевое слово virtual позволяет в дочернем классе
+    // предоставить другую реализацию
+    // метода PerformMonthAndTransactions
     public virtual void PerformMonthAndTransactions()
     {
 
     }
 
-    // переопределяем метод базового класса - класса object 
-    // toString возвращает строку с информацией об объекте
-    //public override string ToString()
-    //{
-    //    return $"Type:{GetType().Name}\tOwner:{Owner}\tNumber of account:{Number}\tBalance:{Balance}";
-    //}
     public override string ToString()
-    => $"Type:{GetType().Name}\tOwner:{Owner}\tNumber of account:{Number}\tBalance:{Balance}";
+    {
+        return $"Type: {GetType().Name}\t" + $"Owner: {Owner}\t" + $"Number of account: {Number}\t" + $"Balance: {Balance}";
+    }
+
+
 }

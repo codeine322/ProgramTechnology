@@ -1,17 +1,19 @@
-﻿namespace Bank;
-
-// record - Состояние объектов этого класса нельзя изменить
+﻿
+namespace bank;
+// мы создали благодаря record неизменяемый тип данных
 public record Transaction(decimal Amount, DateTime Date, string Note);
 
 //internal record Transaction
 //{
+
 //    public decimal Amount { get; }
-//    public DateTime Date { get; }
-//    public string Note { get; }
-//    public Transaction(decimal Amount, DateTime Date, string Note)
+//    public decimal Date { get; }
+//    public decimal Note { get; }
+//    public Transaction(decimal Amount, decimal Date, decimal Note)
 //    {
-//        this.Amount = Amount;
 //        this.Note = Note;
+//        this.Amount = Amount;
 //        this.Date = Date;
 //    }
+
 //}
