@@ -3,15 +3,27 @@ using System.Text;
 
 namespace bank;
 
-// BankAccount - потомок класса object => 
+/// <summary>
+/// Представляет базовый класс банковского счёта и управляет его операциями.
+/// </summary>
 public class BankAccount
 {
-    
-    // Поле для хранения лимита (для обычного счета это 0)
     private readonly decimal _minimumBalance;
-    static private int s_accountNumberSeed = 1000000000;
+    private static int s_accountNumberSeed = 1000000000;
+
+    /// <summary>
+    /// Уникальный номер банковского счёта.
+    /// </summary>
     public string Number { get; }
+
+    /// <summary>
+    /// Имя владельца банковского счёта.
+    /// </summary>
     public string Owner { get; private set; }
+
+    /// <summary>
+    /// Текущий баланс счёта, вычисляемый как сумма всех транзакций.
+    /// </summary>
     public decimal Balance
     {
         get
@@ -24,25 +36,44 @@ public class BankAccount
             return balance;
         }
     }
+
     private List<Transaction> _allTransactions = new List<Transaction>();
-    // Старый конструктор для обычных счетов (минимум равен 0)
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="BankAccount"/> с нулевым минимальным балансом.
+    /// </summary>
+    /// <param name="name">Имя владельца счёта.</param>
+    /// <param name="initialBalance">Начальный баланс при открытии счёта.</param>
     public BankAccount(string name, decimal initialBalance) : this(name, initialBalance, 0)
     {
     }
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="BankAccount"/> с явным указанием лимита.
+    /// </summary>
+    /// <param name="name">Имя владельца счёта.</param>
+    /// <param name="initialBalance">Начальный баланс при открытии счёта.</param>
+    /// <param name="minimumBalance">Минимально допустимый баланс (лимит) для счёта.</param>
     public BankAccount(string name, decimal initialBalance, decimal minimumBalance)
     {
-
-        Owner = name; //this.Owner = name;
-
+        Owner = name;
         Number = s_accountNumberSeed.ToString();
         s_accountNumberSeed++;
-
         _minimumBalance = minimumBalance;
 
         if (initialBalance > 0)
             MakeDeposit(initialBalance, DateTime.UtcNow, "initial balance");
-
     }
+
+    /// <summary>
+    /// Производит внесение (депозит) денежных средств на счёт.
+    /// </summary>
+    /// <param name="amount">Сумма пополнения. Должна быть положительной.</param>
+    /// <param name="date">Дата операции.</param>
+    /// <param name="note">Комментарий к операции.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Бросается, если <paramref name="amount"/> меньше нуля.
+    /// </exception>
     public void MakeDeposit(decimal amount, DateTime date, string note)
     {
         if (amount < 0)
@@ -53,8 +84,17 @@ public class BankAccount
 
         var deposite = new Transaction(amount, date, note);
         _allTransactions.Add(deposite);
-
     }
+
+    /// <summary>
+    /// Производит снятие (списание) денежных средств со счёта.
+    /// </summary>
+    /// <param name="amount">Сумма списания. Должна быть положительной.</param>
+    /// <param name="date">Дата операции.</param>
+    /// <param name="note">Комментарий к операции.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Бросается, если <paramref name="amount"/> меньше или равен нулю.
+    /// </exception>
     public void MakeWithdrawal(decimal amount, DateTime date, string note)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
@@ -69,7 +109,12 @@ public class BankAccount
             _allTransactions.Add(overdraftTransaction);
     }
 
-    // Метод, который переопределяет кредитный счет для начисления 20 единиц комиссии
+    /// <summary>
+    /// Проверяет доступность лимита при снятии средств и формирует штрафную транзакцию при овердрафте.
+    /// </summary>
+    /// <param name="isOverdrawn">Флаг, указывающий, приведёт ли операция к превышению лимита.</param>
+    /// <returns>Объект транзакции овердрафта, либо null, если превышения нет.</returns>
+    /// <exception cref="InvalidOperationException">Вызывается, если на счёте недостаточно средств.</exception>
     protected virtual Transaction? CheckWithdrawalLimit(bool isOverdrawn)
     {
         if (isOverdrawn)
@@ -78,12 +123,14 @@ public class BankAccount
         }
         else
         {
-            //default - содержит значение по умолчанию, так как тип возвращаемого значения - ссылочный, то
-            //default = null
-            return default; // == return null
+            return default;
         }
     }
 
+    /// <summary>
+    /// Формирует текстовую выписку по истории всех транзакций счёта.
+    /// </summary>
+    /// <returns>Строка, содержащая таблицу истории операций.</returns>
     public string GetAccountHistory()
     {
         var report = new StringBuilder();
@@ -100,19 +147,19 @@ public class BankAccount
         return report.ToString();
     }
 
-
-    //Ключевое слово virtual позволяет в дочернем классе
-    // предоставить другую реализацию
-    // метода PerformMonthAndTransactions
+    /// <summary>
+    /// Выполняет регламентные финансовые операции, привязанные к концу месяца.
+    /// </summary>
     public virtual void PerformMonthAndTransactions()
     {
-
     }
 
+    /// <summary>
+    /// Возвращает стандартизированное строковое представление текущего состояния счёта.
+    /// </summary>
+    /// <returns>Строка с типом, владельцем, номером и балансом счёта.</returns>
     public override string ToString()
     {
         return $"Type: {GetType().Name}\t" + $"Owner: {Owner}\t" + $"Number of account: {Number}\t" + $"Balance: {Balance}";
     }
-
-
 }
