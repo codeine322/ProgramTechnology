@@ -6,7 +6,7 @@ namespace bank;
 // BankAccount - потомок класса object => 
 public class BankAccount
 {
-
+    
     // Поле для хранения лимита (для обычного счета это 0)
     private readonly decimal _minimumBalance;
     static private int s_accountNumberSeed = 1000000000;
