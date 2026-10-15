@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace bank
 {
@@ -49,7 +50,7 @@ namespace bank
             {
                 Console.WriteLine(account);
                 account.PerformMonthAndTransactions();
-                Console.WriteLine(account.GetAccountHistory);
+                Console.WriteLine(account.GetAccountHistory());
             }
 
             Console.WriteLine("\n Credit Balance");
@@ -59,6 +60,24 @@ namespace bank
             credit.MakeWithdrawal(1000m, DateTime.UtcNow, "Покупка 2");
             credit.PerformMonthAndTransactions();
             Console.WriteLine(credit.GetAccountHistory());
+
+            Console.WriteLine("\n  Status");
+
+            BankAccount regular = new BankAccount("Regular Client", 20000m);
+            regular.Status = ClientStatus.Regular;
+            regular.PerformMonthAndTransactions();
+            Console.WriteLine(regular.GetAccountHistory());
+
+            BankAccount premium = new BankAccount("Premium Client", 20000m);
+            premium.Status = ClientStatus.Premium;
+            premium.PerformMonthAndTransactions();
+            Console.WriteLine(premium.GetAccountHistory());
+
+            BankAccount vip = new BankAccount("VIP Client", 20000m);
+            vip.Status = ClientStatus.VIP;
+            vip.MakeWithdrawal(1000m, DateTime.UtcNow, "Покупка в магазине");
+            vip.PerformMonthAndTransactions();
+            Console.WriteLine(vip.GetAccountHistory());
         }
     }
 }

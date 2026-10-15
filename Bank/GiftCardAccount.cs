@@ -26,6 +26,8 @@ public class GiftCardAccount : BankAccount
         {
             MakeDeposit(_monthlyDeposit, DateTime.UtcNow, "Add monthly deposit");
         }
+
+        base.PerformMonthAndTransactions();
     }
 
     /// <summary>

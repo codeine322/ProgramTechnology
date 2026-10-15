@@ -26,6 +26,8 @@ public class LineOfCreditAccount : BankAccount
             decimal interest = -Balance * 0.07m;
             MakeWithdrawal(interest, DateTime.UtcNow, "Charge monthly interest");
         }
+
+        base.PerformMonthAndTransactions();
     }
 
     /// <summary>

@@ -3,6 +3,14 @@ using System.Text;
 
 namespace bank;
 
+/// <summary>Статус клиента банка.</summary>
+public enum ClientStatus
+{
+    Regular,
+    Premium,
+    VIP
+}
+
 /// <summary>
 /// Представляет базовый класс банковского счёта и управляет его операциями.
 /// </summary>
@@ -20,6 +28,9 @@ public class BankAccount
     /// Имя владельца банковского счёта.
     /// </summary>
     public string Owner { get; private set; }
+
+    /// <summary>Статус клиента, влияющий на комиссии и кэшбэк.</summary>
+    public ClientStatus Status { get; set; } = ClientStatus.Regular;
 
     /// <summary>
     /// Текущий баланс счёта, вычисляемый как сумма всех транзакций.
@@ -107,6 +118,11 @@ public class BankAccount
 
         if (overdraftTransaction is not null)
             _allTransactions.Add(overdraftTransaction);
+        if (Status == ClientStatus.VIP)
+        {
+            decimal cashback = amount * 0.05m;
+            _allTransactions.Add(new Transaction(cashback, date, "VIP cashback 5%"));
+        }
     }
 
     /// <summary>
@@ -152,6 +168,28 @@ public class BankAccount
     /// </summary>
     public virtual void PerformMonthAndTransactions()
     {
+        switch (Status)
+        {
+            case ClientStatus.Regular:
+                MakeWithdrawal(50m, DateTime.UtcNow, "Monthly fee (Regular)");
+                break;
+
+            case ClientStatus.Premium:
+                if (Balance > 10000m)
+                {
+                    decimal fee = (Balance - 10000m) * 0.01m;
+                    MakeWithdrawal(fee, DateTime.UtcNow, "Premium service fee 1%");
+                }
+                break;
+
+            case ClientStatus.VIP:
+                if (Balance > 10000m)
+                {
+                    decimal fee = (Balance - 10000m) * 0.03m;
+                    MakeWithdrawal(fee, DateTime.UtcNow, "VIP service fee 3%");
+                }
+                break;
+        }
     }
 
     /// <summary>
