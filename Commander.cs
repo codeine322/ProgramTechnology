@@ -9,7 +9,6 @@ namespace SpaceCrew
     {
         public int MissionsCount { get; set; }
 
-        // Computed property
         public bool IsExperienced => MissionsCount > 5;
 
         public Commander(int id, string fullName, int experience)

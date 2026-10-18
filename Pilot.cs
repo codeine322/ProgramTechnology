@@ -9,7 +9,6 @@ namespace SpaceCrew
     {
         public int FlightHours { get; set; }
 
-        // Computed property
         public bool IsAcePilot => FlightHours > 1000;
 
         public Pilot(int id, string fullName, int experience)

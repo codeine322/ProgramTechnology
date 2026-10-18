@@ -9,7 +9,6 @@ namespace SpaceCrew
     {
         public string Specialization { get; set; }
 
-        // Computed property
         public bool IsTechnical => !string.IsNullOrEmpty(Specialization);
 
         public Engineer(int id, string fullName, int experience)

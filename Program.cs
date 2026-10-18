@@ -8,7 +8,6 @@ namespace SpaceCrew
     {
         static void Main(string[] args)
         {
-            // Create a list of base type and populate with derived objects (Polymorphism)
             List<CrewMember> crew = new List<CrewMember>
             {
                 new Commander(1, "Ivanov", 15),
@@ -17,17 +16,14 @@ namespace SpaceCrew
 
             foreach (CrewMember member in crew)
             {
-                // Output the ToString() result
                 Console.WriteLine(member.ToString());
                 Console.WriteLine($"   veteran: {member.IsVeteran.ToString().ToLower()}");
 
-                // Polymorphic method call
                 member.PerformDuty();
 
-                // Type checking via pattern matching (is) to verify interface implementation
                 if (member is ITrainable trainable)
                 {
-                    trainable.Train("EVAs"); // Example training program
+                    trainable.Train("EVAs");
                 }
                 else
                 {
