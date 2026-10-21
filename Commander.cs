@@ -3,7 +3,7 @@
 namespace SpaceCrew
 {
     /// <summary>
-    /// Represents a commander in the space crew.
+    /// Командир космического экипажа.
     /// </summary>
     public class Commander : CrewMember, ITrainable
     {

@@ -1,7 +1,7 @@
 ﻿namespace SpaceCrew
 {
     /// <summary>
-    /// Represents the role of a crew member on a spacecraft.
+    /// Роль члена экипажа на космическом корабле.
     /// </summary>
     public enum CrewRole
     {

@@ -3,7 +3,7 @@
 namespace SpaceCrew
 {
     /// <summary>
-    /// Represents an engineer in the space crew.
+    /// Инженер в составе космического экипажа.
     /// </summary>
     public class Engineer : CrewMember
     {

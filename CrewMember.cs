@@ -3,7 +3,7 @@
 namespace SpaceCrew
 {
     /// <summary>
-    /// Represents a generic member of a space crew.
+    /// Член космического экипажа.
     /// </summary>
     public abstract class CrewMember
     {

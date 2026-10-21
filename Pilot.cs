@@ -3,7 +3,7 @@
 namespace SpaceCrew
 {
     /// <summary>
-    /// Represents a pilot in the space crew.
+    /// Пилот в составе космического экипажа.
     /// </summary>
     public class Pilot : CrewMember, ITrainable
     {

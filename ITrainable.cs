@@ -1,7 +1,7 @@
 ﻿namespace SpaceCrew
 {
     /// <summary>
-    /// Defines a contract for crew members who can undergo training.
+    /// Договор для членов экипажа, которые могут пройти обучение.
     /// </summary>
     public interface ITrainable
     {
