@@ -17,12 +17,12 @@ namespace SpaceCrew
         /// <summary>
         /// Опыт члена экипажа (в годах).
         /// </summary>
-        public int Experience { get; init; }
+        public int Experience { get; set; }
 
         /// <summary>
         /// Роль члена экипажа на корабле.
         /// </summary>
-        public CrewRole Role { get; init; } = CrewRole.Engineer;
+        public CrewRole Role { get; set; } = CrewRole.Engineer;
 
         /// <summary>
         /// Является ли член экипажа ветераном (опыт больше 10 лет).
