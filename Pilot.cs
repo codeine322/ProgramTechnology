@@ -10,7 +10,7 @@ namespace SpaceCrew
         /// <summary>
         /// Налёт часов пилота.
         /// </summary>
-        public int FlightHours { get; init; }
+        public int FlightHours { get; set; }
 
         /// <summary>
         /// Является ли пилот асом (налёт больше 1000 часов).
