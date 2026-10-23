@@ -10,7 +10,7 @@ namespace SpaceCrew
         /// <summary>
         /// Количество выполненных миссий.
         /// </summary>
-        public int MissionsCount { get; init; }
+        public int MissionsCount { get; set; }
 
         /// <summary>
         /// Является ли командир опытным (больше 5 миссий).
