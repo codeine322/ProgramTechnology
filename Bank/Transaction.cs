@@ -20,16 +20,19 @@ public class Transaction
     /// </summary>
     public string Note { get; }
 
+    public Guid? CorrelationId { get; }
+
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="Transaction"/>.
     /// </summary>
     /// <param name="amount">Сумма операции.</param>
     /// <param name="date">Дата проведения.</param>
     /// <param name="note">Комментарий к операции.</param>
-    public Transaction(decimal amount, DateTime date, string note)
+    public Transaction(decimal amount, DateTime date, string note, Guid? correlationId = null)
     {
         Amount = amount;
         Date = date;
         Note = note;
+        CorrelationId = correlationId;
     }
 }

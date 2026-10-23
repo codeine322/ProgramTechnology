@@ -200,4 +200,31 @@ public class BankAccount
     {
         return $"Type: {GetType().Name}\t" + $"Owner: {Owner}\t" + $"Number of account: {Number}\t" + $"Balance: {Balance}";
     }
+
+    /// <summary>
+    /// Переводит указанную сумму со текущего счёта на счёт получателя.
+    /// </summary>
+    /// <param name="destination">Счёт-получатель.</param>
+    /// <param name="amount">Сумма перевода.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Если сумма меньше или равна нулю.</exception>
+    /// <exception cref="InvalidOperationException">Если на счёте недостаточно средств.</exception>
+    public void Transfer(BankAccount destination, decimal amount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount);
+
+        if (destination == null)
+            throw new ArgumentNullException(nameof(destination), "Destination account cannot be null");
+
+        if (destination == this)
+            throw new InvalidOperationException("Cannot transfer money to the same account");
+
+        CheckWithdrawalLimit(Balance - amount < _minimumBalance);
+
+        Guid transferId = Guid.NewGuid();
+        DateTime operationTime = DateTime.UtcNow;
+
+        this.MakeWithdrawal(amount, operationTime, $"Transfer to account {destination.Number}");
+        destination.MakeDeposit(amount, operationTime, $"Transfer from account {this.Number}");
+    }
+
 }
