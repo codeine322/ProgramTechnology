@@ -9,6 +9,7 @@ public enum ClientStatus
     Regular,
     Premium,
     VIP
+
 }
 
 /// <summary>
